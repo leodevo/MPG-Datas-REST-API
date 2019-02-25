@@ -1,5 +1,7 @@
 # MPG-Datas-REST-API
 
+[![Coverage Status](https://coveralls.io/repos/github/leodevo/MPG-Datas-REST-API/badge.svg?branch=master)](https://coveralls.io/github/leodevo/MPG-Datas-REST-API?branch=master)
+
 REST API to expose datas from the fantasy football game "Mon Petit Gazon".
 Coded using Node.js, express & mongoDB.
 
