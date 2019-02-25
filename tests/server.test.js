@@ -33,9 +33,9 @@ describe('GET /players', () => {
     request(app)
       .get('/players')
       .query({
-        tituAndSubsMin: 14,
-        tituAndSubsMinLast10games: 8,
-        coteMax: 20
+        min_tituAndSubs: 14,
+        min_tituAndSubsLast10games: 8,
+        max_cote: 20
       })
       .send()
       .expect(200)
@@ -54,8 +54,8 @@ describe('GET /players', () => {
     request(app)
       .get('/players')
       .query({
-        tituAndSubsMin: 14,
-        tituAndSubsMinLast10games: 8
+        min_tituAndSubs: 14,
+        min_tituAndSubsLast10games: 8
       })
       .send()
       .expect(200)
@@ -74,9 +74,9 @@ describe('GET /players', () => {
     request(app)
       .get('/players')
       .query({
-        tituAndSubsMin: 14,
-        tituAndSubsMinLast10games: 8,
-        coteMax: 'invalidValue' // should be an integer
+        min_tituAndSubs: 14,
+        min_tituAndSubsLast10games: 8,
+        max_cote: 'invalidValue' // should be an integer
       })
       .send()
       .expect(400)
@@ -92,9 +92,9 @@ describe('GET /players', () => {
     request(app)
       .get('/players')
       .query({
-        tituAndSubsMin: 14,
-        tituAndSubsMinLast10games: '$gte 8', // should be an integer
-        coteMax: 20
+        min_tituAndSubs: 14,
+        min_tituAndSubsLast10games: '$gte 8', // should be an integer
+        max_cote: 20
       })
       .send()
       .expect(400)

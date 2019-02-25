@@ -18,16 +18,16 @@ app.use(bodyParser.json())
 function computePlayerSearchCriteria (query) {
   let searchCriterias = {}
 
-  if (query.tituAndSubsMin) {
-    searchCriterias.tituAndSubs = { $gte: query.tituAndSubsMin }
+  if (query.min_tituAndSubs) {
+    searchCriterias.tituAndSubs = { $gte: query.min_tituAndSubs }
   }
 
-  if (query.tituAndSubsMinLast10games) {
-    searchCriterias.tituAndSubsLast10games = { $gte: query.tituAndSubsMinLast10games }
+  if (query.min_tituAndSubsLast10games) {
+    searchCriterias.tituAndSubsLast10games = { $gte: query.min_tituAndSubsLast10games }
   }
 
-  if (query.coteMax) {
-    searchCriterias.cote = { $lte: query.coteMax }
+  if (query.max_cote) {
+    searchCriterias.cote = { $lte: query.max_cote }
   }
 
   return searchCriterias
