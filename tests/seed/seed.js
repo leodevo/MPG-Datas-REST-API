@@ -47,6 +47,14 @@ const playersMatchingSpecificGetRequestTwo = [
   playerTen
 ]
 
+const playersMatchingSpecificGetRequestThree = [
+  playerOne,
+  playerTwo,
+  playerSeven,
+  playerTen
+]
+
+
 const populatePlayers = (done) => {
   Player.deleteMany({}).then(() => {
     return Player.insertMany(players)
@@ -57,5 +65,6 @@ module.exports = {
   players,
   populatePlayers,
   playersMatchingSpecificGetRequestOne,
-  playersMatchingSpecificGetRequestTwo
+  playersMatchingSpecificGetRequestTwo,
+  playersMatchingSpecificGetRequestThree
 }

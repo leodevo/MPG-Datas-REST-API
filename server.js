@@ -1,50 +1,63 @@
 require('./config/config')
+require('./db/mongoose')
 
 const express = require('express')
+const _ = require('lodash')
 const bodyParser = require('body-parser')
 const { celebrate, errors } = require('celebrate')
 
-var { mongoose } = require('./db/mongoose')
 let { Player } = require('./models/player')
 const { celebratePlayerSchema } = require('./celebrateSchemas/celebratePlayersSchema')
 
 var app = express()
 
 const port = process.env.PORT
-console.log(`process.env.PORT : ${process.env.PORT}`)
 
 app.use(bodyParser.json())
 
 function computePlayerSearchCriteria (query) {
-  let searchCriterias = {}
+  let tituAndSubs = {}
+  let tituAndSubsLast10games = {}
+  let cote = {}
+  let goals = {}
 
   if (query.min_tituAndSubs) {
-    searchCriterias.tituAndSubs = { $gte: query.min_tituAndSubs }
+    tituAndSubs.$gte = query.min_tituAndSubs
   }
 
   if (query.min_tituAndSubsLast10games) {
-    searchCriterias.tituAndSubsLast10games = { $gte: query.min_tituAndSubsLast10games }
+    tituAndSubsLast10games.$gte = query.min_tituAndSubsLast10games
   }
 
   if (query.max_cote) {
-    searchCriterias.cote = { $lte: query.max_cote }
+    cote.$lte = query.max_cote
   }
+
+  if (query.min_goals) {
+    goals.$gte = query.min_goals
+  }
+
+  let searchCriterias = {
+    tituAndSubs,
+    tituAndSubsLast10games,
+    cote,
+    goals
+  }
+
+  // Delete all empty attributes from searchCriterias (needed for mongoose query)
+  Object.keys(searchCriterias).forEach(key => _.isEmpty(searchCriterias[key]) && delete searchCriterias[key])
 
   return searchCriterias
 }
 
 app.get('/players', celebrate(celebratePlayerSchema), (req, res) => {
-  /*
-  let tituAndSubsMin = req.query.tituAndSubsMin
-  let tituAndSubsMinLast10games = req.query.tituAndSubsMinLast10games
-  let coteMax = req.query.coteMax
+  let searchCriterias
 
-  console.log(`tituAndSubsMin : ${tituAndSubsMin}`)
-  console.log(`tituAndSubsMinLast10games : ${tituAndSubsMinLast10games}`)
-  console.log(`coteMax : ${coteMax}`)
-  */
-
-  let searchCriterias = computePlayerSearchCriteria(req.query)
+  try {
+    searchCriterias = computePlayerSearchCriteria(req.query)
+  } catch (e) {
+    res.status(500).send(e.message)
+  }
 
   Player.find(searchCriterias, '-__v').then((players) => {
     console.log(`number of players corresponding to the criterias : ${players.length}`)

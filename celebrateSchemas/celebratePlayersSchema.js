@@ -4,7 +4,8 @@ const celebratePlayerSchema = {
   query: Joi.object().keys({
     min_tituAndSubs: Joi.number().integer(),
     min_tituAndSubsLast10games: Joi.number().integer(),
-    max_cote: Joi.number().integer()
+    max_cote: Joi.number().integer(),
+    min_goals: Joi.number().integer()
   })
 }
 

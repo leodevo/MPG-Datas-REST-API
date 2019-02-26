@@ -7,7 +7,8 @@ const {
   players,
   populatePlayers,
   playersMatchingSpecificGetRequestOne,
-  playersMatchingSpecificGetRequestTwo
+  playersMatchingSpecificGetRequestTwo,
+  playersMatchingSpecificGetRequestThree
 } = require('./seed/seed')
 
 beforeEach(populatePlayers)
@@ -50,17 +51,37 @@ describe('GET /players', () => {
       })
   })
 
-  it('should return only players matching query params - 2', (done) => { // CoteMax not provided
+  it('should return only players matching query params - 2', (done) => {
     request(app)
       .get('/players')
       .query({
         min_tituAndSubs: 14,
         min_tituAndSubsLast10games: 8
+        // max_cote not provided
       })
       .send()
       .expect(200)
       .expect((res) => {
         expect(res.body.players).toEqual(playersMatchingSpecificGetRequestTwo)
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err)
+        }
+        done()
+      })
+  })
+
+  it('should return only players matching query params - 3', (done) => {
+    request(app)
+      .get('/players')
+      .query({
+        min_goals: 3
+      })
+      .send()
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.players).toEqual(playersMatchingSpecificGetRequestThree)
       })
       .end((err, res) => {
         if (err) {
