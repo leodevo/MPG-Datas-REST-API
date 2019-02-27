@@ -39,6 +39,7 @@ UserSchema.methods.toJSON = function () {
   return _.pick(userOject, ['_id', 'email']) // only returning those 2 properties to the client
 }
 
+// '.methods' => instance method
 UserSchema.methods.generateAuthToken = function () {
   let user = this
   let access = 'auth'
@@ -56,6 +57,27 @@ UserSchema.methods.generateAuthToken = function () {
 
   return user.save().then(() => {
     return token
+  })
+}
+
+// '.statics' =>  model method
+UserSchema.statics.findByToken = function (token) {
+  let User = this
+  let decoded
+
+  // First step is to verify token authenticity
+
+  // jwt.verify() will throw if verification fails (token value manipulated or secret salt wrong)
+  try {
+    decoded = jwt.verify(token, 'abc12345') // TODO move salt into a configuration variable
+  } catch (e) {
+    return Promise.reject(e)
+  }
+
+  return User.findOne({
+    _id: decoded._id,
+    'tokens.token': token,
+    'tokens.access': decoded.access
   })
 }
 
