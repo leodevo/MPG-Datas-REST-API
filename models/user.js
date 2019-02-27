@@ -47,12 +47,6 @@ UserSchema.methods.generateAuthToken = function () {
     access
   }, 'abc12345').toString() // TODO move salt into a configuration variable
 
-  console.log('token :', token)
-  console.log()
-  console.log('user :', user)
-  console.log()
-  console.log('user.toObject() :', user.toObject())
-
   user.tokens = user.tokens.concat([{
     access,
     token
