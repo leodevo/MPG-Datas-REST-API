@@ -70,7 +70,6 @@ app.get('/players', celebrate(celebratePlayerSchema), (req, res) => {
 })
 
 // POST /users
-
 app.post('/users', (req, res) => {
   let body = _.pick(req.body, ['email', 'password'])
 
