@@ -79,6 +79,7 @@ UserSchema.statics.findByToken = function (token) {
     'tokens.access': decoded.access
   })
 }
+
 UserSchema.pre('save', function () {
   return new Promise((resolve, reject) => {
     let user = this

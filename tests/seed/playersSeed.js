@@ -10,7 +10,7 @@ const {
   playerEight,
   playerNine,
   playerTen
-} = require('./playersDatasSeed')
+} = require('./datas/playersDatasSeed')
 
 const players = [
   playerOne,
@@ -53,7 +53,6 @@ const playersMatchingSpecificGetRequestThree = [
   playerSeven,
   playerTen
 ]
-
 
 const populatePlayers = (done) => {
   Player.deleteMany({}).then(() => {

@@ -3,14 +3,22 @@ const request = require('supertest')
 
 const { app } = require('./../server')
 
+const { User } = require('./../models/user')
+
 const {
   players,
   populatePlayers,
   playersMatchingSpecificGetRequestOne,
   playersMatchingSpecificGetRequestTwo,
   playersMatchingSpecificGetRequestThree
-} = require('./seed/seed')
+} = require('./seed/playersSeed')
 
+const {
+  users,
+  populateUsers
+} = require('./seed/usersSeed')
+
+beforeEach(populateUsers)
 beforeEach(populatePlayers)
 
 describe('GET /players', () => {
@@ -124,6 +132,139 @@ describe('GET /players', () => {
           return done(err)
         }
         done()
+      })
+  })
+})
+
+describe('GET /users/me', () => {
+  it('should return user if authenticated', (done) => {
+    request(app)
+      .get('/users/me')
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body._id).toBe(users[0]._id.toHexString())
+        expect(res.body.email).toBe(users[0].email)
+      })
+      .end(done)
+  })
+
+  it('should return 401 if  authentification fails', (done) => {
+    request(app)
+      .get('/users/me')
+      .expect(401)
+      .expect((res) => {
+        expect(res.body).toEqual({})
+      })
+      .end(done)
+  })
+})
+
+describe('POST /users', () => {
+  it('should create a user', (done) => {
+    let email = 'example@random.com'
+    let password = 'jrjrj2222!L'
+
+    request(app)
+      .post('/users')
+      .send({ email, password })
+      .expect(200)
+      .expect((res) => {
+        expect(res.headers['x-auth']).toBeTruthy()
+        expect(res.body._id).toBeTruthy()
+        expect(res.body.email).toBe(email)
+      })
+      .end((err) => {
+        if (err) {
+          console.log(err.message)
+          return done(err)
+        }
+
+        User.findOne({ email }).then((user) => {
+          expect(user).toBeTruthy()
+          expect(user.password).not.toBe(password) // password should be hashed and therefore be modified
+          done()
+        })
+      })
+  })
+
+  it('should return validation error if the request is invalid (invalid email)', (done) => {
+    let aInvalidEmail = 'ImAWrongEmail'
+    let aValidPassword = 'jrjrj2222!L'
+
+    request(app)
+      .post('/users')
+      .send({ 
+        email: aInvalidEmail,
+        password: aValidPassword
+      })
+      .expect(400)
+      .expect((res) => {
+        expect(res.headers['x-auth']).toBeFalsy()
+      })
+      .end((err) => {
+        if (err) {
+          console.log(err.message)
+          return done(err)
+        }
+
+        User.findOne({ aInvalidEmail }).then((user) => {
+          expect(user).toBeFalsy()
+          done()
+        })
+      })
+  })
+
+  it('should return validation error if the request is invalid (invalid password)', (done) => {
+    let aValidEmail = 'ImAValidEmail@email.com'
+    let aInvalidPassword = 'abc' // Password is too short
+
+    request(app)
+      .post('/users')
+      .send({ 
+        email: aValidEmail, 
+        password: aInvalidPassword
+      })
+      .expect(400)
+      .expect((res) => {
+        expect(res.headers['x-auth']).toBeFalsy()
+      })
+      .end((err) => {
+        if (err) {
+          console.log(err.message)
+          return done(err)
+        }
+
+        User.findOne({ aValidEmail }).then((user) => {
+          expect(user).toBeFalsy()
+          done()
+        })
+      })
+  })
+
+  it('should not create user if email is already in use', (done) => {
+    let aValidPassword = 'jrjrj2222!L'
+
+    request(app)
+      .post('/users')
+      .send({
+        email: users[0].email,
+        password: aValidPassword
+      })
+      .expect(400)
+      .expect((res) => {
+        expect(res.headers['x-auth']).toBeFalsy()
+      })
+      .end((err) => {
+        if (err) {
+          console.log(err.message)
+          return done(err)
+        }
+
+        User.find().then((usersReturned) => {
+          expect(usersReturned.length).toBe(2) // verifying that no users have been inserted
+          done()
+        })
       })
   })
 })
