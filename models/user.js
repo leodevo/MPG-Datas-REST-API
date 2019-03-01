@@ -47,7 +47,7 @@ UserSchema.methods.generateAuthToken = function () {
   let token = jwt.sign({
     _id: user._id.toHexString(),
     access
-  }, 'abc12345').toString() // TODO move salt into a configuration variable
+  }, process.env.JWT_SECRET).toString()
 
   user.tokens = user.tokens.concat([{
     access,
@@ -80,7 +80,7 @@ UserSchema.statics.findByToken = function (token) {
 
   // jwt.verify() will throw if verification fails (token value manipulated or secret salt wrong)
   try {
-    decoded = jwt.verify(token, 'abc12345') // TODO move salt into a configuration variable
+    decoded = jwt.verify(token, process.env.JWT_SECRET)
   } catch (e) {
     return Promise.reject(e)
   }

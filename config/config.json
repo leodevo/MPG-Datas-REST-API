@@ -1,10 +1,12 @@
 {
   "test": {
     "PORT": 3000,
-    "MONGODB_URI":"mongodb://localhost:27017/MPG-REST-API-TEST"
+    "MONGODB_URI":"mongodb://localhost:27017/MPG-REST-API-TEST",
+    "JWT_SECRET": "feFFREU766ppoeEuU733ffF4nbbnKJK"
   },
   "development": {
     "PORT":3000,
-    "MONGODB_URI":"mongodb://localhost:27017/MPG-REST-API"
+    "MONGODB_URI":"mongodb://localhost:27017/MPG-REST-API",
+    "JWT_SECRET": "ffeiIijiiiiIII888FHhftfg66fbgF6hngl"
   }
 }
