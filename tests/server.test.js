@@ -25,6 +25,7 @@ describe('GET /players', () => {
   it('should return All players', (done) => {
     request(app)
       .get('/players')
+      .set('x-auth', users[0].tokens[0].token)
       .send()
       .expect(200)
       .expect((res) => {
@@ -41,6 +42,7 @@ describe('GET /players', () => {
   it('should return only players matching query params - 1', (done) => {
     request(app)
       .get('/players')
+      .set('x-auth', users[0].tokens[0].token)
       .query({
         min_tituAndSubs: 14,
         min_tituAndSubsLast10games: 8,
@@ -62,6 +64,7 @@ describe('GET /players', () => {
   it('should return only players matching query params - 2', (done) => {
     request(app)
       .get('/players')
+      .set('x-auth', users[0].tokens[0].token)
       .query({
         min_tituAndSubs: 14,
         min_tituAndSubsLast10games: 8
@@ -83,6 +86,7 @@ describe('GET /players', () => {
   it('should return only players matching query params - 3', (done) => {
     request(app)
       .get('/players')
+      .set('x-auth', users[0].tokens[0].token)
       .query({
         min_goals: 3
       })
@@ -102,6 +106,7 @@ describe('GET /players', () => {
   it('should return 400 when params in query are invalid', (done) => {
     request(app)
       .get('/players')
+      .set('x-auth', users[0].tokens[0].token)
       .query({
         min_tituAndSubs: 14,
         min_tituAndSubsLast10games: 8,
@@ -120,6 +125,7 @@ describe('GET /players', () => {
   it('should return 400 when params in query are invalid - preventing NoSQL injection', (done) => {
     request(app)
       .get('/players')
+      .set('x-auth', users[0].tokens[0].token)
       .query({
         min_tituAndSubs: 14,
         min_tituAndSubsLast10games: '$gte 8', // should be an integer
@@ -196,7 +202,7 @@ describe('POST /users', () => {
 
     request(app)
       .post('/users')
-      .send({ 
+      .send({
         email: aInvalidEmail,
         password: aValidPassword
       })
@@ -225,7 +231,7 @@ describe('POST /users', () => {
 
     request(app)
       .post('/users')
-      .send({ 
+      .send({
         email: aValidEmail, 
         password: aInvalidPassword
       })

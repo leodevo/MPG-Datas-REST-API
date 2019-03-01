@@ -52,7 +52,7 @@ function computePlayerSearchCriteria (query) {
   return searchCriterias
 }
 
-app.get('/players', celebrate(celebratePlayerSchema), (req, res) => {
+app.get('/players', celebrate(celebratePlayerSchema), authenticate, (req, res) => {
   let searchCriterias
 
   try {
