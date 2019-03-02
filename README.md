@@ -12,5 +12,7 @@ Coded using Node.js, express & mongoDB.
 * Unit testing with mocha, expect & supertest
 * Manual testing with Postman
 * Express input sanitization with celebrate.js middleware & joi.js
-* MongoDB basics
-* Mongoose queries
+* Mongoose
+* App hosting with heroku
+* DB hosting with Mongo Atlas
+
