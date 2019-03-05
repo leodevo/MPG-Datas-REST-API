@@ -17,11 +17,23 @@ const port = process.env.PORT
 
 app.use(bodyParser.json())
 
+const parsePosition = (positionQuery) => {
+  let $or = []
+  const positionArray = positionQuery.toUpperCase().split('OR')
+  positionArray.forEach(pos => {
+    $or.push({ position: pos })
+  })
+
+  return $or
+}
+
 function computePlayerSearchCriteria (query) {
   let tituAndSubs = {}
   let tituAndSubsLast10games = {}
   let cote = {}
   let goals = {}
+  let position = {}
+  let $or = {}
 
   if (query.min_tituAndSubs) {
     tituAndSubs.$gte = query.min_tituAndSubs
@@ -30,7 +42,6 @@ function computePlayerSearchCriteria (query) {
   if (query.min_tituAndSubsLast10games) {
     tituAndSubsLast10games.$gte = query.min_tituAndSubsLast10games
   }
-
   if (query.max_cote) {
     cote.$lte = query.max_cote
   }
@@ -39,11 +50,21 @@ function computePlayerSearchCriteria (query) {
     goals.$gte = query.min_goals
   }
 
+  if (query.position) {
+    if (query.position.length === 1) {
+      position = query.position
+    } else {
+      $or = parsePosition(query.position)
+    }
+  }
+
   let searchCriterias = {
     tituAndSubs,
     tituAndSubsLast10games,
     cote,
-    goals
+    goals,
+    position,
+    $or
   }
 
   // Delete all empty attributes from searchCriterias (needed for mongoose query)
@@ -58,7 +79,8 @@ app.get('/players', celebrate(celebratePlayerSchema), authenticate, (req, res) =
   try {
     searchCriterias = computePlayerSearchCriteria(req.query)
   } catch (e) {
-    res.status(500).send(e.message)
+    console.log(e)
+    return res.status(500).send(e)
   }
 
   Player.find(searchCriterias, '-__v').then((players) => {

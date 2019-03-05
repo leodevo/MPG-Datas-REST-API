@@ -10,7 +10,9 @@ const {
   populatePlayers,
   playersMatchingSpecificGetRequestOne,
   playersMatchingSpecificGetRequestTwo,
-  playersMatchingSpecificGetRequestThree
+  playersMatchingSpecificGetRequestThree,
+  playersMatchingSpecificGetRequestFour,
+  playersMatchingSpecificGetRequestFive
 } = require('./seed/playersSeed')
 
 const {
@@ -130,6 +132,80 @@ describe('GET /players', () => {
         min_tituAndSubs: 14,
         min_tituAndSubsLast10games: '$gte 8', // should be an integer
         max_cote: 20
+      })
+      .send()
+      .expect(400)
+      .end((err, res) => {
+        if (err) {
+          return done(err)
+        }
+        done()
+      })
+  })
+
+  it('should return only players matching query params - 4 (Defenders only)', (done) => {
+    request(app)
+      .get('/players')
+      .set('x-auth', users[0].tokens[0].token)
+      .query({
+        position: 'D'
+      })
+      .send()
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.players).toEqual(playersMatchingSpecificGetRequestFour)
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err)
+        }
+        done()
+      })
+  })
+
+  it('should return only players matching query params - 5 (Defenders and offensive players)', (done) => {
+    request(app)
+      .get('/players')
+      .set('x-auth', users[0].tokens[0].token)
+      .query({
+        position: 'DorA'
+      })
+      .send()
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.players).toEqual(playersMatchingSpecificGetRequestFive)
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err)
+        }
+        done()
+      })
+  })
+
+  it('should return 400 when position param does not match regex - 1', (done) => {
+    request(app)
+      .get('/players')
+      .set('x-auth', users[0].tokens[0].token)
+      .query({
+        position: 'ADHIEFIJ'
+      })
+      .send()
+      .expect(400)
+      .end((err, res) => {
+        if (err) {
+          return done(err)
+        }
+        done()
+      })
+  })
+
+  it('should return 400 when position param does not match regex - 2', (done) => {
+    request(app)
+      .get('/players')
+      .set('x-auth', users[0].tokens[0].token)
+      .query({
+        position: 'AorDorfefefe'
       })
       .send()
       .expect(400)
