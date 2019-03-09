@@ -168,7 +168,7 @@ describe('GET /players', () => {
       .get('/players')
       .set('x-auth', users[0].tokens[0].token)
       .query({
-        position: 'DorA'
+        position: 'D|A'
       })
       .send()
       .expect(200)
@@ -205,7 +205,7 @@ describe('GET /players', () => {
       .get('/players')
       .set('x-auth', users[0].tokens[0].token)
       .query({
-        position: 'AorDorfefefe'
+        position: 'A|D|fefefe'
       })
       .send()
       .expect(400)

@@ -6,12 +6,12 @@ const celebratePlayerSchema = {
     min_tituAndSubsLast10games: Joi.number().integer(),
     max_cote: Joi.number().integer(),
     min_goals: Joi.number().integer(),
-    position: Joi.string().regex(/(^(([A-Z]or)|[A-Z]$)+$)|^[A-Z]$/)
+    position: Joi.string().regex(/(^(([A-Z]\|)|[A-Z]$)+$)|^[A-Z]$/)
     /*
-      'DorA'   => OK (Défenseurs or Attaquants)
+      'D|A'   => OK (Défenseurs or Attaquants)
       'A'      => OK (Attaquants only)
       'ADG'    => not OK
-      'DorAorefefef' => not OK
+      'D|A|efefef' => not OK
       ...
     */
   })

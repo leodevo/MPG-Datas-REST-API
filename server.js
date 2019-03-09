@@ -19,7 +19,7 @@ app.use(bodyParser.json())
 
 const parsePosition = (positionQuery) => {
   let $or = []
-  const positionArray = positionQuery.toUpperCase().split('OR')
+  const positionArray = positionQuery.toUpperCase().split('|')
   positionArray.forEach(pos => {
     $or.push({ position: pos })
   })
