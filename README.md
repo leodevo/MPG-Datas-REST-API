@@ -6,6 +6,8 @@
 REST API to expose datas from the fantasy football game "Mon Petit Gazon".
 Coded using Node.js, express & mongoDB.
 
+hosted on https://mpg-datas-rest-api.herokuapp.com 
+
 # What I Learned
 
 * Creation of a REST API using express & mongoDB
